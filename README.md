@@ -37,6 +37,30 @@ Third by-app scrape encountered huge data loss. Out of the **13k apps**, only **
 We made multiple attempts, trying to receive more records, lowering the chunk size, but nothing helped.
 
 
+# How to run
+
+Install dependencies
+```
+npm install
+pip install -r requirements.txt
+```
+
+Prepare data directories
+```
+mkdir gplay/images
+```
+
+Run app scraper
+```
+node ./gplay_scrape.js
+```
+
+Run image collector
+```
+python gplay_images.py
+```
+
+
 # Hardware
 - processor: AMD Ryzen 7 5800x
 - RAM: 32 GB, 3066 MHz
