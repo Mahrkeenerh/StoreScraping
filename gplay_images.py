@@ -4,6 +4,7 @@ import numpy as np
 import os
 import time
 from threading import Thread
+from tqdm import tqdm
 
 import aiohttp
 import cv2
@@ -13,7 +14,7 @@ apps = []
 removed = 0
 
 
-def filter(single_block = False):
+def filter(single_block=False):
     global apps
 
     for file_name in os.listdir("gplay"):
@@ -56,13 +57,10 @@ async def save_image(session, app, screenshot, j):
 
 
 async def main():
-    start_time = time.time()
-    print(f'0/{len(apps)} apps done. 0.00%')
-
     async with aiohttp.ClientSession() as session:
         chunk_size = 100
 
-        for i in range(0, len(apps), chunk_size):
+        for i in tqdm(range(0, len(apps), chunk_size), desc="Downloading images"):
             tasks = []
 
             for app in apps[i:i+chunk_size]:
@@ -71,22 +69,19 @@ async def main():
 
             await asyncio.gather(*tasks)
 
-            eta = (time.time() - start_time) / (i + chunk_size) * (len(apps) - i - chunk_size)
-            print(f'\033[F{i+chunk_size}/{len(apps)} apps done. '
-                f'{round((i+chunk_size) / len(apps) * 100, 2)}% ETA {eta}s\033[K')
-
 
 def verify(start_index, end_index):
     global apps
 
-    for _, app in enumerate(apps[start_index:end_index]):
+    for app in apps[start_index:end_index]:
         for image_id in range(len(app['images']) - 1, -1, -1):
             file_name = app['images'][image_id]
 
             try:
-                img = cv2.imread('gplay/images/' + file_name)
+                img = cv2.imread('gplay/images/' + file_name, cv2.IMREAD_COLOR)
                 if img is None:
                     raise Exception('Image is None')
+                cv2.imwrite('gplay/images/' + file_name, img)
             except:
                 print(f'Image {file_name} is corrupt. Removing.')
                 os.remove('gplay/images/' + file_name)
