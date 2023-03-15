@@ -17,7 +17,9 @@ removed = 0
 def filter(single_block=False):
     global apps
 
-    for file_name in os.listdir("gplay"):
+    temp_apps = []
+
+    for file_name in tqdm(os.listdir("gplay"), desc="Loading files"):
         if "example" in file_name:
             continue
 
@@ -25,15 +27,26 @@ def filter(single_block=False):
             continue
 
         with open('gplay/' + file_name, encoding="utf-8") as f:
-            apps += json.load(f)
+            temp_apps += json.load(f)
 
             if single_block:
                 break
 
-    for entry in apps:
+    for entry in temp_apps:
         entry["images"] = []
 
-    # FILTER OUT BAD ENTRIES
+    def filter_games(temp_apps):
+        return_list = []
+
+        for app in tqdm(temp_apps, desc="Filtering apps"):
+            if "GAME" in app["genreId"]:
+                return_list.append(app)
+        
+        return return_list
+
+    temp_apps = filter_games(temp_apps)
+
+    apps = temp_apps
 
 
 def print_start():
@@ -139,7 +152,7 @@ def save_json():
 if __name__ == '__main__':
     start_time = time.time()
 
-    filter(True)
+    filter()
     print_start()
 
     loop = asyncio.new_event_loop()
