@@ -60,6 +60,10 @@ Run image collector
 python gplay_images.py
 ```
 
+Run dataset filtering
+```
+python filter_dataset.py
+```
 
 # Hardware
 - processor: AMD Ryzen 7 5800x
