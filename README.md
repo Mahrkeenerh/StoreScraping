@@ -23,6 +23,7 @@ The full dataset consists of **188k apps**, with **2.1m images**, so on average,
 
 Based on the sample batch, the full dataset would take about **6 hours** to download, and take up around **170 GiB** of disk space.
 
+Further statistics are avaialble in the [stats.ipynb](stats.ipynb) notebook.
 
 # Apple store
 
